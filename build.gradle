@@ -1,0 +1,43 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'java'
+}
+
+group 'me.loidsemus'
+version '1.1.0'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url = "https://repo.aikar.co/content/groups/aikar/" }
+}
+
+dependencies {
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    compileOnly 'org.spigotmc:spigot-api:1.15.2-R0.1-SNAPSHOT'
+    compile "co.aikar:acf-bukkit:0.5.0-SNAPSHOT"
+}
+
+compileJava {
+    options.compilerArgs += ["-parameters"]
+    options.fork = true
+    options.forkOptions.executable = 'javac'
+}
+
+shadowJar {
+    relocate 'co.aikar.commands', 'me.loidsemus.commands.acf'
+    archiveFileName = "ItemEjector-${this.version}.jar"
+}
+
+import org.apache.tools.ant.filters.*
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: version]
+    }
+}
+
+build.dependsOn shadowJar

@@ -1,0 +1,5 @@
+name: ItemEjector
+main: me.loidsemus.itemejector.ItemEjector
+version: @version@
+author: loidsemus
+api-version: 1.15
