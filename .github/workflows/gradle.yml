@@ -17,3 +17,10 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew clean shadowJar
+    - name: Upload distribution
+      uses: actions/upload-artifact@v1.0.0
+      if: success()
+      with:
+        name: Build
+        path: build/libs
+      
