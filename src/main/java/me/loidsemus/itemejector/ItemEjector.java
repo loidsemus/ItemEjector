@@ -39,8 +39,13 @@ public class ItemEjector extends JavaPlugin {
             playerManager.loadAllPlayers();
         }
 
+        int pluginId = 75548;
+
+        // bStats
+        MetricsLite metrics = new MetricsLite(this, pluginId);
+
         // Check for updates
-        new UpdateChecker(this, 75548).getLatestVersion(version -> {
+        new UpdateChecker(this, pluginId).getLatestVersion(version -> {
             if (!this.getDescription().getVersion().equalsIgnoreCase(version)) {
                 getLogger().log(Level.INFO, "There is a new version available on SpigotMC: " + version);
                 newVersion = version;
