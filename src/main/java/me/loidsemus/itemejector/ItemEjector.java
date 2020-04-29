@@ -42,7 +42,7 @@ public class ItemEjector extends JavaPlugin {
         int pluginId = 75548;
 
         // bStats
-        MetricsLite metrics = new MetricsLite(this, pluginId);
+        MetricsLite metrics = new MetricsLite(this, 7364);
 
         // Check for updates
         new UpdateChecker(this, pluginId).getLatestVersion(version -> {
