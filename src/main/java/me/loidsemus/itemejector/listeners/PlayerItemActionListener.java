@@ -2,6 +2,7 @@ package me.loidsemus.itemejector.listeners;
 
 import me.loidsemus.itemejector.ItemEjector;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,7 +20,7 @@ public class PlayerItemActionListener implements Listener {
 
     @EventHandler
     public void onPlayerPickup(EntityPickupItemEvent event) {
-        if(!(event.getEntity() instanceof Player)) {
+        if (!(event.getEntity() instanceof Player)) {
             return;
         }
 
@@ -28,28 +29,30 @@ public class PlayerItemActionListener implements Listener {
         Item pickedUpItem = event.getItem();
         Material pickupMaterial = pickedUpItem.getItemStack().getType();
 
-        if(!plugin.getPlayerManager().getPlayer(uuid).getBlacklistedItems().containsKey(pickupMaterial)) {
+        if (!plugin.getPlayerManager().getPlayer(uuid).getBlacklistedItems().containsKey(pickupMaterial)) {
             return;
         }
 
         int maxItems = plugin.getPlayerManager().getPlayer(uuid).getBlacklistedItems().get(pickupMaterial);
         // Get amount of the Material that is already in the player's inventory
         int amountInInventory = 0;
-        for(ItemStack item : player.getInventory().all(pickupMaterial).values()) {
+        for (ItemStack item : player.getInventory().all(pickupMaterial).values()) {
             amountInInventory += item.getAmount();
         }
 
         //System.out.println(pickupMaterial.toString() + ": " + pickedUpItem.getItemStack().getAmount() + "/" + maxItems + " INV " + amountInInventory);
 
-        if(maxItems == 0) {
+        // If player has max items set to 0, cancel immediately because there's no scenario where anything would have to be picked up
+        if (maxItems == 0) {
             event.setCancelled(true);
             return;
-        } else if(pickedUpItem.getItemStack().getAmount() + amountInInventory <= maxItems) {
+        }
+        else if (pickedUpItem.getItemStack().getAmount() + amountInInventory <= maxItems) {
             return;
         }
 
         int itemsToPickUp = maxItems - amountInInventory;
-        if(itemsToPickUp <= 0) {
+        if (itemsToPickUp <= 0) {
             event.setCancelled(true);
             return;
         }
@@ -63,6 +66,9 @@ public class PlayerItemActionListener implements Listener {
         ItemStack pickedUpItemStack = pickedUpItem.getItemStack().clone();
         pickedUpItemStack.setAmount(itemsToPickUp);
         player.getInventory().addItem(pickedUpItemStack);
+
+        // Feels weird without a sound
+        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.5f, 1f);
     }
 
 }

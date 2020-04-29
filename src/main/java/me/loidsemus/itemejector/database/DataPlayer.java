@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class DataPlayer {
 
-    private String uuid;
-    private Map<Material, Integer> blacklistedItems;
+    private final String uuid;
+    private final Map<Material, Integer> blacklistedItems;
 
     public DataPlayer(String uuid) {
         this.uuid = uuid;

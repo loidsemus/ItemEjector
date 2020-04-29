@@ -1,11 +1,16 @@
 package me.loidsemus.itemejector.database;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import me.loidsemus.itemejector.ItemEjector;
 import org.bukkit.Material;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -19,7 +24,7 @@ public class SQLiteDataSource extends DataSource {
 
     private ItemEjector plugin;
     private File dbFile;
-    private Connection connection;
+    private HikariDataSource hikari;
 
     public SQLiteDataSource(ItemEjector plugin) {
         this.plugin = plugin;
@@ -30,42 +35,51 @@ public class SQLiteDataSource extends DataSource {
                 dbFile.getParentFile().mkdirs();
                 dbFile.createNewFile();
             }
-            connect();
-            connection.createStatement().executeUpdate(CREATE_TABLE_QUERY);
-        } catch (IOException | SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Could not create database: " + e.getMessage());
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.SEVERE, "Could not create database file: " + e.getMessage());
         }
-    }
 
-    private void connect() throws SQLException {
-        String url = "jdbc:sqlite:" + dbFile.getPath();
-        connection = DriverManager.getConnection(url);
+        HikariConfig config = new HikariConfig();
+        config.setPoolName("ItemEjectorSQLitePool");
+        config.setDriverClassName("org.sqlite.JDBC");
+        config.setJdbcUrl("jdbc:sqlite:" + dbFile.getPath());
+        config.setMaximumPoolSize(10);
+        config.setConnectionTestQuery("SELECT 1;");
+        hikari = new HikariDataSource(config);
+
+        try(Connection conn = hikari.getConnection(); PreparedStatement stmt = conn.prepareStatement(CREATE_TABLE_QUERY)) {
+            stmt.executeUpdate();
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void savePlayer(DataPlayer player) {
-        try (PreparedStatement deleteStmt = connection.prepareStatement(DELETE_PLAYER_QUERY)) {
-            deleteStmt.setString(1, player.getUuid());
-            deleteStmt.executeUpdate();
+        try (Connection conn = hikari.getConnection(); PreparedStatement stmt = conn.prepareStatement(DELETE_PLAYER_QUERY)) {
+            stmt.setString(1, player.getUuid());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-            for (Map.Entry<Material, Integer> entry : player.getBlacklistedItems().entrySet()) {
-                PreparedStatement stmt = connection.prepareStatement(INSERT_PLAYER_QUERY);
+        for (Map.Entry<Material, Integer> entry : player.getBlacklistedItems().entrySet()) {
+            try(Connection conn = hikari.getConnection(); PreparedStatement stmt = conn.prepareStatement(INSERT_PLAYER_QUERY)) {
                 Material material = entry.getKey();
                 int max = entry.getValue();
                 stmt.setString(1, player.getUuid());
                 stmt.setString(2, material.toString());
                 stmt.setInt(3, max);
                 stmt.executeUpdate();
-                stmt.close();
+            } catch(SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
     @Override
     public DataPlayer loadPlayer(String uuid) {
-        try (PreparedStatement stmt = connection.prepareStatement(SELECT_PLAYER_QUERY)) {
+        try (Connection conn = hikari.getConnection(); PreparedStatement stmt = conn.prepareStatement(SELECT_PLAYER_QUERY)) {
 
             stmt.setString(1, uuid);
             ResultSet resultSet = stmt.executeQuery();
