@@ -7,6 +7,8 @@ import me.loidsemus.itemejector.database.DataSource;
 import me.loidsemus.itemejector.database.SQLiteDataSource;
 import me.loidsemus.itemejector.listeners.PlayerItemActionListener;
 import me.loidsemus.itemejector.listeners.PlayerJoinLeaveListener;
+import me.loidsemus.itemejector.utils.UpdateChecker;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -19,8 +21,6 @@ public class ItemEjector extends JavaPlugin {
     private Messages messages;
     private DataSource dataSource;
     private PlayerManager playerManager;
-
-    private String newVersion;
 
     @Override
     public void onEnable() {
@@ -42,15 +42,13 @@ public class ItemEjector extends JavaPlugin {
         int pluginId = 75548;
 
         // bStats
-        MetricsLite metrics = new MetricsLite(this, 7364);
+        new MetricsLite(this, 7364);
 
         // Check for updates
-        new UpdateChecker(this, pluginId).getLatestVersion(version -> {
-            if (!this.getDescription().getVersion().equalsIgnoreCase(version)) {
-                getLogger().log(Level.INFO, "There is a new version available on SpigotMC: " + version);
-                newVersion = version;
-            }
-        });
+        UpdateChecker updateChecker = new UpdateChecker(this, pluginId);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            updateChecker.getNewVersion(version -> getLogger().log(Level.WARNING, "There is a new version available on SpigotMC: " + version));
+        }, 0L, 60L * 30L * 20L);
     }
 
     public void loadConfigAndMessages() {
@@ -99,9 +97,5 @@ public class ItemEjector extends JavaPlugin {
 
     public PlayerManager getPlayerManager() {
         return playerManager;
-    }
-
-    public String getNewVersion() {
-        return newVersion;
     }
 }
