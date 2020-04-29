@@ -29,14 +29,14 @@ public class ItemEjector extends JavaPlugin {
         loadConfigAndMessages();
 
         dataSource = new SQLiteDataSource(this);
-        playerManager = new PlayerManager(this);
+        playerManager = new PlayerManager(dataSource);
 
         registerEvents();
         registerCommands();
 
         // Load all players if server is not empty, to support /reload
         if (getServer().getOnlinePlayers().size() > 0) {
-            playerManager.loadAllPlayers();
+            getServer().getOnlinePlayers().forEach(player -> playerManager.loadPlayer(player.getUniqueId().toString()));
         }
 
         int pluginId = 75548;

@@ -1,27 +1,28 @@
 package me.loidsemus.itemejector;
 
 import me.loidsemus.itemejector.database.DataPlayer;
+import me.loidsemus.itemejector.database.DataSource;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerManager {
 
-    private ItemEjector plugin;
+    private DataSource dataSource;
     private Map<String, DataPlayer> players = new HashMap<>();
 
-    public PlayerManager(ItemEjector plugin) {
-        this.plugin = plugin;
+    public PlayerManager(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public DataPlayer loadPlayer(String uuid) {
-        DataPlayer dataPlayer = plugin.getDataSource().loadPlayer(uuid);
+        DataPlayer dataPlayer = dataSource.loadPlayer(uuid);
         players.put(uuid, dataPlayer);
         return dataPlayer;
     }
 
     public void clearAndSavePlayer(String uuid) {
-        plugin.getDataSource().savePlayer(players.get(uuid));
+        dataSource.savePlayer(players.get(uuid));
         players.remove(uuid);
     }
 
@@ -29,11 +30,7 @@ public class PlayerManager {
         return players.get(uuid);
     }
 
-    public void loadAllPlayers() {
-        plugin.getServer().getOnlinePlayers().forEach(player -> loadPlayer(player.getUniqueId().toString()));
-    }
-
     public void saveAllPlayers() {
-        players.forEach((uuid, dataPlayer) -> plugin.getDataSource().savePlayer(dataPlayer));
+        players.forEach((uuid, dataPlayer) -> dataSource.savePlayer(dataPlayer));
     }
 }
