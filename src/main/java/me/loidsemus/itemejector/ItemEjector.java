@@ -8,7 +8,10 @@ import me.loidsemus.itemejector.listeners.PlayerItemActionListener;
 import me.loidsemus.itemejector.listeners.PlayerJoinLeaveListener;
 import me.loidsemus.itemejector.messages.Messages;
 import me.loidsemus.itemejector.utils.UpdateChecker;
+import me.lucko.commodore.Commodore;
+import me.lucko.commodore.CommodoreProvider;
 import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -82,7 +85,17 @@ public class ItemEjector extends JavaPlugin {
     }
 
     private void registerCommands() {
-        Objects.requireNonNull(getCommand("itemejector")).setExecutor(new MainCommand(this));
+        PluginCommand command = Objects.requireNonNull(getCommand("itemejector"));
+        command.setExecutor(new MainCommand(this));
+
+        if(CommodoreProvider.isSupported()) {
+            Commodore commodore = CommodoreProvider.getCommodore(this);
+            try {
+                MainCommand.registerCommodore(this, commodore);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

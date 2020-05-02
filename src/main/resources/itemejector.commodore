@@ -1,0 +1,11 @@
+itemejector {
+  add {
+      item brigadier:string single_word {
+          max brigadier:integer;
+      }
+  }
+  remove {
+      item brigadier:string single_word;
+  }
+  list;
+}
