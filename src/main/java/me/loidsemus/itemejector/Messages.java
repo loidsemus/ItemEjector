@@ -6,7 +6,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
 
 public class Messages {
 
@@ -38,19 +42,37 @@ public class Messages {
             properties.load(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
+            return;
         }
+
+        List<String> missingKeys = new ArrayList<>();
+        for (Map.Entry<Object, Object> entry : fallbackProps.entrySet()) {
+            if (!properties.containsKey(entry.getKey())) {
+                missingKeys.add(entry.getKey().toString());
+            }
+        }
+
+        if (missingKeys.isEmpty()) {
+            return;
+        }
+
+        plugin.getLogger().log(Level.WARNING,
+                "lang_" + languageCode + ".properties is missing " + missingKeys.size() + " values: " +
+                        String.join(", ", missingKeys) + "\n" +
+                        "To fix this, copy the missing values from lang_default.properties to lang_" + languageCode + ".properties");
     }
 
     public String get(String key, boolean prefix) {
         StringBuilder builder = new StringBuilder();
 
-        if(prefix && !isNullOrEmpty(properties.getProperty("prefix"))) {
+        if (prefix && !isNullOrEmpty(properties.getProperty("prefix"))) {
             builder.append(ChatColor.translateAlternateColorCodes('&', properties.getProperty("prefix"))).append(" ");
         }
 
-        if(!isNullOrEmpty(properties.getProperty(key))) {
+        if (!isNullOrEmpty(properties.getProperty(key))) {
             builder.append(ChatColor.translateAlternateColorCodes('&', properties.getProperty(key)));
-        } else {
+        }
+        else {
             builder.append(ChatColor.translateAlternateColorCodes('&', fallbackProps.getProperty(key)));
         }
 

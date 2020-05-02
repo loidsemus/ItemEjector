@@ -64,8 +64,7 @@ public final class MainCommand implements CommandExecutor {
             if (args[0].equalsIgnoreCase("add")) {
                 Material material = Material.matchMaterial(args[1]);
                 if (material == null) {
-                    // TODO: Configurable message
-                    player.sendMessage(args[1] + " is not a valid item name");
+                    player.sendMessage(plugin.getMessages().get("invalid_item", true).replaceAll("\\{arg}", args[1]));
                     return true;
                 }
                 dataPlayer.addOrUpdateBlacklistedItem(material, 0);
@@ -77,8 +76,7 @@ public final class MainCommand implements CommandExecutor {
             else if (args[0].equalsIgnoreCase("remove")) {
                 Material material = Material.matchMaterial(args[1]);
                 if (material == null) {
-                    // TODO: Configurable message
-                    player.sendMessage(args[1] + " is not a valid item name");
+                    player.sendMessage(plugin.getMessages().get("invalid_item", true).replaceAll("\\{arg}", args[1]));
                     return true;
                 }
 
@@ -99,8 +97,7 @@ public final class MainCommand implements CommandExecutor {
             if (args[0].equalsIgnoreCase("add")) {
                 Material material = Material.matchMaterial(args[1]);
                 if (material == null) {
-                    // TODO: Configurable message
-                    player.sendMessage(args[1] + " is not a valid item name");
+                    player.sendMessage(plugin.getMessages().get("invalid_item", true).replaceAll("\\{arg}", args[1]));
                     return true;
                 }
 
@@ -112,8 +109,7 @@ public final class MainCommand implements CommandExecutor {
                             .replaceAll("\\{item}", material.toString())
                             .replaceAll("\\{maxAmount}", max + ""));
                 } catch (NumberFormatException e) {
-                    // TODO: Configurable message
-                    player.sendMessage(args[2] + " is not a number");
+                    player.sendMessage(plugin.getMessages().get("not_a_number", true).replaceAll("\\{arg}", args[2]));
                     return true;
                 }
             }
@@ -129,8 +125,7 @@ public final class MainCommand implements CommandExecutor {
     }
 
     private void showUsage(Player p, String usage) {
-        // TODO: Configurable message
-        p.sendMessage("Usage: /ie " + usage);
+        p.sendMessage(plugin.getMessages().get("correct_usage", true).replaceAll("\\{usage}", usage));
     }
 
     private void showUsage(Player p) {
