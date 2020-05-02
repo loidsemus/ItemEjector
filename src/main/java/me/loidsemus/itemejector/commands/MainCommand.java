@@ -3,11 +3,13 @@ package me.loidsemus.itemejector.commands;
 
 import me.loidsemus.itemejector.ItemEjector;
 import me.loidsemus.itemejector.database.DataPlayer;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
 
 import java.util.Map;
 
@@ -24,6 +26,10 @@ public final class MainCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length >= 1 && (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl"))) {
+            if(!sender.hasPermission("itemejector.admin")) {
+                sender.sendMessage(plugin.getMessages().get("insufficient_permission", true));
+                return true;
+            }
             plugin.loadConfigAndMessages();
             sender.sendMessage("Config and messages reloaded");
             return true;
@@ -34,6 +40,10 @@ public final class MainCommand implements CommandExecutor {
             return true;
         }
         Player player = (Player) sender;
+        if(!player.hasPermission("itemejector.use")) {
+            player.sendMessage(plugin.getMessages().get("insufficient_permission", true));
+            return true;
+        }
         DataPlayer dataPlayer = plugin.getPlayerManager().getPlayer(player.getUniqueId().toString());
 
         if (args.length == 1) {
