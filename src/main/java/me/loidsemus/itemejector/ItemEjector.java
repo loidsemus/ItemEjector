@@ -6,12 +6,14 @@ import me.loidsemus.itemejector.database.DataSource;
 import me.loidsemus.itemejector.database.SQLiteDataSource;
 import me.loidsemus.itemejector.listeners.PlayerItemActionListener;
 import me.loidsemus.itemejector.listeners.PlayerJoinLeaveListener;
+import me.loidsemus.itemejector.messages.Messages;
 import me.loidsemus.itemejector.utils.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class ItemEjector extends JavaPlugin {
@@ -45,15 +47,22 @@ public class ItemEjector extends JavaPlugin {
 
         // Check for updates
         UpdateChecker updateChecker = new UpdateChecker(this, pluginId);
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            updateChecker.getNewVersion(version -> getLogger().log(Level.WARNING, "There is a new version available on SpigotMC: " + version));
-        }, 0L, 60L * 30L * 20L);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () ->
+                        updateChecker.getNewVersion(version ->
+                                getLogger().log(Level.WARNING, "There is a new version available on SpigotMC: " + version)),
+                0L, 60L * 30L * 20L);
     }
 
     public void loadConfigAndMessages() {
         getLogger().log(Level.INFO, "(Re)loading configs and messages");
         customConfig.load();
         String languageCode = getCustomConfig().getConfig().getString("lang");
+
+        if (languageCode == null) {
+            getLogger().log(Level.WARNING, "A language code is not set in the config, falling back to default values");
+            messages.useDefaults();
+            return;
+        }
 
         try {
             messages.load(languageCode);
@@ -73,7 +82,7 @@ public class ItemEjector extends JavaPlugin {
     }
 
     private void registerCommands() {
-        getCommand("itemejector").setExecutor(new MainCommand(this));
+        Objects.requireNonNull(getCommand("itemejector")).setExecutor(new MainCommand(this));
     }
 
     @Override
