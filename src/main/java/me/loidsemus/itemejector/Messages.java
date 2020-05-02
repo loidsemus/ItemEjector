@@ -41,7 +41,7 @@ public class Messages {
         }
     }
 
-    public String getMessage(String key, boolean prefix) {
+    public String get(String key, boolean prefix) {
         StringBuilder builder = new StringBuilder();
 
         if(prefix && !isNullOrEmpty(properties.getProperty("prefix"))) {

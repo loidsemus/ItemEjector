@@ -1,6 +1,5 @@
 package me.loidsemus.itemejector;
 
-import co.aikar.commands.BukkitCommandManager;
 import me.loidsemus.itemejector.commands.MainCommand;
 import me.loidsemus.itemejector.config.Config;
 import me.loidsemus.itemejector.database.DataSource;
@@ -74,8 +73,7 @@ public class ItemEjector extends JavaPlugin {
     }
 
     private void registerCommands() {
-        BukkitCommandManager commandManager = new BukkitCommandManager(this);
-        commandManager.registerCommand(new MainCommand(this));
+        getCommand("itemejector").setExecutor(new MainCommand(this));
     }
 
     @Override
