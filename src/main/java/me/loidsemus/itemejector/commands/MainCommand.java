@@ -4,6 +4,7 @@ package me.loidsemus.itemejector.commands;
 import me.loidsemus.itemejector.ItemEjector;
 import me.loidsemus.itemejector.database.DataPlayer;
 import me.loidsemus.itemejector.messages.LangKey;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -58,7 +59,7 @@ public final class MainCommand implements CommandExecutor {
             else if (args[0].equalsIgnoreCase("list")) {
                 StringBuilder message = new StringBuilder(plugin.getMessages().get(LangKey.LIST_HEADER, true) + "\n");
                 for (Map.Entry<Material, Integer> entry : dataPlayer.getBlacklistedItems().entrySet()) {
-                    message.append(plugin.getMessages().get(LangKey.LIST_ITEM, false, entry.getKey().toString(), entry.getValue().toString()))
+                    message.append(plugin.getMessages().get(LangKey.LIST_ITEM, false, plugin.getMessages().getPrefixOffset(), entry.getKey().toString(), entry.getValue().toString()))
                             .append("\n");
                 }
                 player.sendMessage(message.toString());

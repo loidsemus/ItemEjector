@@ -13,7 +13,7 @@ public enum LangKey {
     NOT_A_NUMBER("&e{arg} &cis not a number!", "arg"),
 
     LIST_HEADER("Blacklisted items: (&eitem &7/ &cmax&r)"),
-    LIST_ITEM("&e{item} &7/ &c{maxAmount}&r", "item", "maxAmount");
+    LIST_ITEM("{prefixOffset}&e{item} &7/ &c{maxAmount}&r", "prefixOffset", "item", "maxAmount");
 
     private final String defaultValue;
     private final String[] args;

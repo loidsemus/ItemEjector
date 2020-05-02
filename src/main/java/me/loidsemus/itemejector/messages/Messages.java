@@ -17,6 +17,7 @@ public class Messages {
     private final Properties properties = new Properties();
 
     private boolean useDefaults = true;
+    private String prefixOffset;
 
     public Messages(ItemEjector plugin) {
         this.plugin = plugin;
@@ -29,6 +30,7 @@ public class Messages {
 
         if (languageCode.equalsIgnoreCase("default")) {
             useDefaults = true;
+            setPrefixOffset(LangKey.PREFIX.getDefaultValue());
             return;
         }
         useDefaults = false;
@@ -42,6 +44,8 @@ public class Messages {
             e.printStackTrace();
             return;
         }
+
+        setPrefixOffset(properties.getProperty("prefix"));
 
         List<String> missingKeys = new ArrayList<>();
         for (LangKey key : LangKey.values()) {
@@ -79,7 +83,8 @@ public class Messages {
             for (LangKey key : LangKey.values()) {
                 if (key.getArgs().length > 0) {
                     pw.println("# Placeholders: " + String.join(", ", key.getArgs()));
-                } else {
+                }
+                else {
                     pw.println("# No placeholders");
                 }
                 pw.println(key.getKey() + "=" + key.getDefaultValue() + "\n");
@@ -89,6 +94,23 @@ public class Messages {
             e.printStackTrace();
         }
 
+    }
+
+    private void setPrefixOffset(String prefix) {
+        if (isNotNullOrEmpty(prefix)) {
+            StringBuilder prefixOffset = new StringBuilder(" ");
+            String strippedPrefix = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', prefix));
+            for (int i = 0; i < strippedPrefix.length(); i++) {
+                prefixOffset.append(" ");
+            }
+            this.prefixOffset = prefixOffset.toString();
+            return;
+        }
+        prefixOffset = "";
+    }
+
+    public String getPrefixOffset() {
+        return prefixOffset;
     }
 
     public String get(LangKey key, boolean prefix, String... args) {
@@ -117,9 +139,9 @@ public class Messages {
 
         String message = builder.toString();
         // Replace placeholders
-        if(key.getArgs().length > 0) {
+        if (key.getArgs().length > 0) {
             int index = 0;
-            for(String arg : args) {
+            for (String arg : args) {
                 message = StringUtils.replace(message, "{" + key.getArgs()[index] + "}", arg);
                 index++;
             }
