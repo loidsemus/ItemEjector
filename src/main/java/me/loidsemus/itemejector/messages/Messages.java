@@ -96,6 +96,10 @@ public class Messages {
 
     }
 
+    public String getPrefixOffset() {
+        return prefixOffset;
+    }
+
     private void setPrefixOffset(String prefix) {
         if (isNotNullOrEmpty(prefix)) {
             StringBuilder prefixOffset = new StringBuilder(" ");
@@ -107,10 +111,6 @@ public class Messages {
             return;
         }
         prefixOffset = "";
-    }
-
-    public String getPrefixOffset() {
-        return prefixOffset;
     }
 
     public String get(LangKey key, boolean prefix, String... args) {

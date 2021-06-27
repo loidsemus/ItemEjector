@@ -7,7 +7,6 @@ import me.loidsemus.itemejector.database.DataPlayer;
 import me.loidsemus.itemejector.messages.LangKey;
 import me.lucko.commodore.Commodore;
 import me.lucko.commodore.file.CommodoreFileFormat;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,6 +26,20 @@ public final class MainCommand implements CommandExecutor {
     }
 
     // TODO: permission checking
+
+    public static void registerCommodore(ItemEjector plugin, Commodore commodore) throws Exception {
+        PluginCommand command = plugin.getCommand("itemejector");
+
+        try (InputStream is = plugin.getResource("itemejector.commodore")) {
+            if (is == null) {
+                throw new Exception("Command completion file missing from jar");
+            }
+
+            LiteralCommandNode<?> commandNode = CommodoreFileFormat.parse(is);
+            commodore.register(command, commandNode);
+        }
+
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -140,19 +153,5 @@ public final class MainCommand implements CommandExecutor {
 
     private void showUsage(Player p) {
         showUsage(p, "(add <item> [max] | remove <item> | list)");
-    }
-
-    public static void registerCommodore(ItemEjector plugin, Commodore commodore) throws Exception {
-        PluginCommand command = plugin.getCommand("itemejector");
-
-        try (InputStream is = plugin.getResource("itemejector.commodore")) {
-            if(is == null) {
-                throw new Exception("Command completion file missing from jar");
-            }
-
-            LiteralCommandNode<?> commandNode = CommodoreFileFormat.parse(is);
-            commodore.register(command, commandNode);
-        }
-
     }
 }

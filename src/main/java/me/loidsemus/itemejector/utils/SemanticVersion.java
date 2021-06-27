@@ -2,8 +2,8 @@ package me.loidsemus.itemejector.utils;
 
 public class SemanticVersion implements Comparable<SemanticVersion> {
 
-    private String versionString;
     private final int[] numbers;
+    private String versionString;
 
     public SemanticVersion(String version) {
         this.versionString = version;

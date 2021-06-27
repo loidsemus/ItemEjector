@@ -47,9 +47,9 @@ public class SQLiteDataSource extends DataSource {
         config.setConnectionTestQuery("SELECT 1;");
         hikari = new HikariDataSource(config);
 
-        try(Connection conn = hikari.getConnection(); PreparedStatement stmt = conn.prepareStatement(CREATE_TABLE_QUERY)) {
+        try (Connection conn = hikari.getConnection(); PreparedStatement stmt = conn.prepareStatement(CREATE_TABLE_QUERY)) {
             stmt.executeUpdate();
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -64,14 +64,14 @@ public class SQLiteDataSource extends DataSource {
         }
 
         for (Map.Entry<Material, Integer> entry : player.getBlacklistedItems().entrySet()) {
-            try(Connection conn = hikari.getConnection(); PreparedStatement stmt = conn.prepareStatement(INSERT_PLAYER_QUERY)) {
+            try (Connection conn = hikari.getConnection(); PreparedStatement stmt = conn.prepareStatement(INSERT_PLAYER_QUERY)) {
                 Material material = entry.getKey();
                 int max = entry.getValue();
                 stmt.setString(1, player.getUuid());
                 stmt.setString(2, material.toString());
                 stmt.setInt(3, max);
                 stmt.executeUpdate();
-            } catch(SQLException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
