@@ -45,9 +45,6 @@ public class ItemEjector extends JavaPlugin {
 
         int pluginId = 75548;
 
-        // bStats
-        new MetricsLite(this, 7364);
-
         // Check for updates
         UpdateChecker updateChecker = new UpdateChecker(this, pluginId);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () ->
@@ -88,7 +85,7 @@ public class ItemEjector extends JavaPlugin {
         PluginCommand command = Objects.requireNonNull(getCommand("itemejector"));
         command.setExecutor(new MainCommand(this));
 
-        if(CommodoreProvider.isSupported()) {
+        if (CommodoreProvider.isSupported()) {
             Commodore commodore = CommodoreProvider.getCommodore(this);
             try {
                 MainCommand.registerCommodore(this, commodore);
