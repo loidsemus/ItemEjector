@@ -73,7 +73,6 @@ public class Messages {
      */
     private void saveDefaults() {
         File defaultFile = new File(plugin.getDataFolder(), "lang_default.properties");
-        if(!plugin.getDataFolder().exists()) plugin.getDataFolder().mkdirs();
         try (PrintWriter pw = new PrintWriter(new FileOutputStream(defaultFile, false))) {
 
             pw.println("# DO NOT CHANGE THE CONTENTS OF THIS FILE\n" +
