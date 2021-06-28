@@ -13,7 +13,6 @@ import me.loidsemus.itemejector.messages.Messages;
 import me.loidsemus.itemejector.utils.UpdateChecker;
 import me.lucko.commodore.Commodore;
 import me.lucko.commodore.CommodoreProvider;
-import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -45,14 +44,24 @@ public class ItemEjector extends JavaPlugin {
             getServer().getOnlinePlayers().forEach(player -> playerManager.loadPlayer(player.getUniqueId().toString()));
         }
 
-        int pluginId = 75548;
-
         // Check for updates
-        UpdateChecker updateChecker = new UpdateChecker(this, pluginId);
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () ->
-                        updateChecker.getNewVersion(version ->
-                                getLogger().log(Level.WARNING, "There is a new version available on SpigotMC: " + version)),
-                0L, 60L * 30L * 20L);
+        UpdateChecker.init(this, 75548).requestUpdateCheck().whenComplete((result, e) -> {
+            if (result.requiresUpdate()) {
+                getLogger().info(String.format("An update is available on Spigot: %s", result.getNewestVersion()));
+                return;
+            }
+
+            UpdateChecker.UpdateReason reason = result.getReason();
+            if (reason == UpdateChecker.UpdateReason.UP_TO_DATE) {
+                this.getLogger().info(String.format("Your version of ItemEjector (%s) is up to date!", result.getNewestVersion()));
+            }
+            else if (reason == UpdateChecker.UpdateReason.UNRELEASED_VERSION) {
+                this.getLogger().info(String.format("Your version of ItemEjector (%s) is more recent than the one publicly available. Are you on a development build?", result.getNewestVersion()));
+            }
+            else {
+                this.getLogger().warning("Could not check for a new version of ItemEjector. Reason: " + reason);
+            }
+        });
     }
 
     public void loadConfigAndMessages() {

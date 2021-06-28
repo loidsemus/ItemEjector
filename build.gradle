@@ -26,6 +26,7 @@ dependencies {
     implementation 'me.lucko:commodore:1.8'
     implementation 'de.themoep:inventorygui:1.5-SNAPSHOT'
     implementation 'ch.jalu:configme:1.2.0'
+    implementation 'org.jetbrains:annotations:16.0.2'
 }
 
 compileJava {
