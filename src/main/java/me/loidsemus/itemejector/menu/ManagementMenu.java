@@ -13,7 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-public class MainMenu extends InventoryGui {
+public class ManagementMenu extends InventoryGui {
 
     private final ItemEjector plugin;
     private final DataPlayer dataPlayer;
@@ -27,7 +27,7 @@ public class MainMenu extends InventoryGui {
             "    a  pn",
     };
 
-    public MainMenu(ItemEjector plugin, DataPlayer dataPlayer) {
+    public ManagementMenu(ItemEjector plugin, DataPlayer dataPlayer) {
         super(plugin, "ItemEjector Management", layout);
         this.plugin = plugin;
         this.dataPlayer = dataPlayer;
