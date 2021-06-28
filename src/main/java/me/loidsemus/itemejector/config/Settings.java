@@ -1,6 +1,5 @@
 package me.loidsemus.itemejector.config;
 
-import ch.jalu.configme.Comment;
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.properties.Property;
 
