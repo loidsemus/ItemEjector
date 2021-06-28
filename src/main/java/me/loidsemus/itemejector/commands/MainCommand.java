@@ -3,6 +3,8 @@ package me.loidsemus.itemejector.commands;
 
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import me.loidsemus.itemejector.ItemEjector;
+import me.loidsemus.itemejector.config.GUISettings;
+import me.loidsemus.itemejector.config.Settings;
 import me.loidsemus.itemejector.database.DataPlayer;
 import me.loidsemus.itemejector.menu.ManagementMenu;
 import me.loidsemus.itemejector.messages.LangKey;
@@ -142,8 +144,12 @@ public final class MainCommand implements CommandExecutor {
             }
         }
         else {
-            //showUsage(player);
-            new ManagementMenu(plugin, dataPlayer).show(player);
+            if (plugin.getSettingsManager().getProperty(GUISettings.ENABLED)) {
+                new ManagementMenu(plugin, dataPlayer).show(player);
+            }
+            else {
+                showUsage(player);
+            }
         }
 
         return true;

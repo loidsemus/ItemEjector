@@ -1,7 +1,10 @@
 package me.loidsemus.itemejector;
 
+import ch.jalu.configme.SettingsManager;
+import ch.jalu.configme.SettingsManagerBuilder;
 import me.loidsemus.itemejector.commands.MainCommand;
-import me.loidsemus.itemejector.config.Config;
+import me.loidsemus.itemejector.config.GUISettings;
+import me.loidsemus.itemejector.config.Settings;
 import me.loidsemus.itemejector.database.DataSource;
 import me.loidsemus.itemejector.database.SQLiteDataSource;
 import me.loidsemus.itemejector.listeners.PlayerItemActionListener;
@@ -21,14 +24,13 @@ import java.util.logging.Level;
 
 public class ItemEjector extends JavaPlugin {
 
-    private Config customConfig;
+    private SettingsManager settingsManager;
     private Messages messages;
     private DataSource dataSource;
     private PlayerManager playerManager;
 
     @Override
     public void onEnable() {
-        customConfig = new Config(this, new File(getDataFolder(), "config.yml"));
         messages = new Messages(this);
         loadConfigAndMessages();
 
@@ -55,8 +57,11 @@ public class ItemEjector extends JavaPlugin {
 
     public void loadConfigAndMessages() {
         getLogger().log(Level.INFO, "(Re)loading configs and messages");
-        customConfig.load();
-        String languageCode = getCustomConfig().getConfig().getString("lang");
+        settingsManager = SettingsManagerBuilder.withYamlFile(new File(getDataFolder(), "config.yml"))
+                .configurationData(Settings.class, GUISettings.class)
+                .useDefaultMigrationService()
+                .create();
+        String languageCode = settingsManager.getProperty(Settings.LANGUAGE);
 
         if (languageCode == null) {
             getLogger().log(Level.WARNING, "A language code is not set in the config, falling back to default values");
@@ -100,10 +105,6 @@ public class ItemEjector extends JavaPlugin {
         playerManager.saveAllPlayers();
     }
 
-    public Config getCustomConfig() {
-        return customConfig;
-    }
-
     public Messages getMessages() {
         return messages;
     }
@@ -114,5 +115,9 @@ public class ItemEjector extends JavaPlugin {
 
     public PlayerManager getPlayerManager() {
         return playerManager;
+    }
+
+    public SettingsManager getSettingsManager() {
+        return settingsManager;
     }
 }
