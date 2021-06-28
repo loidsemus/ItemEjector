@@ -22,12 +22,10 @@ public class SQLiteDataSource extends DataSource {
     private static final String SELECT_PLAYER_QUERY = "SELECT * FROM players WHERE uuid = ?;";
     private static final String DELETE_PLAYER_QUERY = "DELETE FROM players WHERE uuid = ?";
 
-    private ItemEjector plugin;
     private File dbFile;
     private HikariDataSource hikari;
 
     public SQLiteDataSource(ItemEjector plugin) {
-        this.plugin = plugin;
 
         dbFile = new File(plugin.getDataFolder(), "data/players.db");
         try {
