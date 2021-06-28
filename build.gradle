@@ -10,6 +10,7 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    mavenLocal()
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url = 'https://libraries.minecraft.net/' }
@@ -27,6 +28,7 @@ dependencies {
     implementation 'de.themoep:inventorygui:1.5-SNAPSHOT'
     implementation 'ch.jalu:configme:1.2.0'
     implementation 'org.jetbrains:annotations:16.0.2'
+    implementation 'me.loidsemus:lingo:1.0.0'
 }
 
 compileJava {
@@ -36,6 +38,10 @@ compileJava {
 }
 
 shadowJar {
+    dependencies {
+        exclude dependency("org.yaml:snakeyaml")
+    }
+
     relocate 'me.lucko.commodore', 'me.loidsemus.itemejector.commands.commodore'
     archiveFileName = "ItemEjector-${this.version}.jar"
     minimize()

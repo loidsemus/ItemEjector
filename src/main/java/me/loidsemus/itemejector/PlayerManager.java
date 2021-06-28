@@ -8,8 +8,8 @@ import java.util.Map;
 
 public class PlayerManager {
 
-    private DataSource dataSource;
-    private Map<String, DataPlayer> players = new HashMap<>();
+    private final DataSource dataSource;
+    private final Map<String, DataPlayer> players = new HashMap<>();
 
     public PlayerManager(DataSource dataSource) {
         this.dataSource = dataSource;

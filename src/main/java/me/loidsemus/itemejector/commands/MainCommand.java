@@ -3,11 +3,9 @@ package me.loidsemus.itemejector.commands;
 
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import me.loidsemus.itemejector.ItemEjector;
-import me.loidsemus.itemejector.config.GUISettings;
-import me.loidsemus.itemejector.config.Settings;
 import me.loidsemus.itemejector.database.DataPlayer;
 import me.loidsemus.itemejector.menu.ManagementMenu;
-import me.loidsemus.itemejector.messages.LangKey;
+import me.loidsemus.itemejector.messages.Messages;
 import me.lucko.commodore.Commodore;
 import me.lucko.commodore.file.CommodoreFileFormat;
 import org.bukkit.Material;
@@ -18,7 +16,6 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
 import java.io.InputStream;
-import java.util.Map;
 
 public final class MainCommand implements CommandExecutor {
 
@@ -48,7 +45,7 @@ public final class MainCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length >= 1 && (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl"))) {
             if (!sender.hasPermission("itemejector.admin")) {
-                sender.sendMessage(plugin.getMessages().get(LangKey.INSUFFICIENT_PERMISSION, true));
+                plugin.getMessageProvider().sendPrefixed(sender, Messages.INSUFFICIENT_PERMISSION);
                 return true;
             }
             plugin.loadConfigAndMessages();
@@ -62,7 +59,7 @@ public final class MainCommand implements CommandExecutor {
         }
         Player player = (Player) sender;
         if (!player.hasPermission("itemejector.use")) {
-            player.sendMessage(plugin.getMessages().get(LangKey.INSUFFICIENT_PERMISSION, true));
+            plugin.getMessageProvider().sendPrefixed(player, Messages.INSUFFICIENT_PERMISSION);
             return true;
         }
         DataPlayer dataPlayer = plugin.getPlayerManager().getPlayer(player.getUniqueId().toString());
@@ -78,12 +75,7 @@ public final class MainCommand implements CommandExecutor {
             }
             // list
             else if (args[0].equalsIgnoreCase("list")) {
-                StringBuilder message = new StringBuilder(plugin.getMessages().get(LangKey.LIST_HEADER, true) + "\n");
-                for (Map.Entry<Material, Integer> entry : dataPlayer.getBlacklistedItems().entrySet()) {
-                    message.append(plugin.getMessages().get(LangKey.LIST_ITEM, false, plugin.getMessages().getPrefixOffset(), entry.getKey().toString(), entry.getValue().toString()))
-                            .append("\n");
-                }
-                player.sendMessage(message.toString());
+                new ManagementMenu(plugin, dataPlayer).show(player);
             }
             else {
                 showUsage(player);
@@ -94,27 +86,27 @@ public final class MainCommand implements CommandExecutor {
             if (args[0].equalsIgnoreCase("add")) {
                 Material material = Material.matchMaterial(args[1]);
                 if (material == null) {
-                    player.sendMessage(plugin.getMessages().get(LangKey.INVALID_ITEM, true, args[1]));
+                    plugin.getMessageProvider().sendPrefixed(player, Messages.INVALID_ITEM, "arg", args[1]);
                     return true;
                 }
                 dataPlayer.addOrUpdateBlacklistedItem(material, 0);
-                player.sendMessage(plugin.getMessages().get(LangKey.ADDED_ITEM, true, material.toString(), 0 + ""));
+                plugin.getMessageProvider().sendPrefixed(player, Messages.ADDED_ITEM, "item", material.toString(), "maxAmount", "0");
             }
             // remove <item>
             else if (args[0].equalsIgnoreCase("remove")) {
                 Material material = Material.matchMaterial(args[1]);
                 if (material == null) {
-                    player.sendMessage(plugin.getMessages().get(LangKey.INVALID_ITEM, true, args[1]));
+                    plugin.getMessageProvider().sendPrefixed(player, Messages.INVALID_ITEM, "arg", args[1]);
                     return true;
                 }
 
                 if (!dataPlayer.hasBlacklistedItem(material)) {
-                    player.sendMessage(plugin.getMessages().get(LangKey.ITEM_NOT_BLACKLISTED, true, material.toString()));
+                    plugin.getMessageProvider().sendPrefixed(player, Messages.ITEM_NOT_BLACKLISTED, "item", material.toString());
                     return true;
                 }
 
                 dataPlayer.removeBlacklistedItem(material);
-                player.sendMessage(plugin.getMessages().get(LangKey.REMOVED_ITEM, true, material.toString()));
+                plugin.getMessageProvider().sendPrefixed(player, Messages.REMOVED_ITEM, "item", material.toString());
             }
             else {
                 showUsage(player);
@@ -125,7 +117,7 @@ public final class MainCommand implements CommandExecutor {
             if (args[0].equalsIgnoreCase("add")) {
                 Material material = Material.matchMaterial(args[1]);
                 if (material == null) {
-                    player.sendMessage(plugin.getMessages().get(LangKey.INVALID_ITEM, true, args[1]));
+                    plugin.getMessageProvider().sendPrefixed(player, Messages.INVALID_ITEM, "arg", args[1]);
                     return true;
                 }
 
@@ -133,9 +125,9 @@ public final class MainCommand implements CommandExecutor {
                     int max = Integer.parseInt(args[2]);
 
                     plugin.getPlayerManager().getPlayer(player.getUniqueId().toString()).addOrUpdateBlacklistedItem(material, max);
-                    player.sendMessage(plugin.getMessages().get(LangKey.ADDED_ITEM, true, material.toString(), max + ""));
+                    plugin.getMessageProvider().sendPrefixed(player, Messages.ADDED_ITEM, "item", material.toString(), "maxAmount", max + "");
                 } catch (NumberFormatException e) {
-                    player.sendMessage(plugin.getMessages().get(LangKey.NOT_A_NUMBER, true, args[2]));
+                    plugin.getMessageProvider().sendPrefixed(player, Messages.NOT_A_NUMBER, "arg", args[2]);
                     return true;
                 }
             }
@@ -144,19 +136,14 @@ public final class MainCommand implements CommandExecutor {
             }
         }
         else {
-            if (plugin.getSettingsManager().getProperty(GUISettings.ENABLED)) {
-                new ManagementMenu(plugin, dataPlayer).show(player);
-            }
-            else {
-                showUsage(player);
-            }
+            new ManagementMenu(plugin, dataPlayer).show(player);
         }
 
         return true;
     }
 
     private void showUsage(Player p, String usage) {
-        p.sendMessage(plugin.getMessages().get(LangKey.CORRECT_USAGE, true, usage));
+        plugin.getMessageProvider().sendPrefixed(p, Messages.CORRECT_USAGE, "usage", usage);
     }
 
     private void showUsage(Player p) {

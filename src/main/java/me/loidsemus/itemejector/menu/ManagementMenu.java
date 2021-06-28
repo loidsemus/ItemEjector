@@ -6,17 +6,15 @@ import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import me.loidsemus.itemejector.ItemEjector;
 import me.loidsemus.itemejector.database.DataPlayer;
-import me.loidsemus.itemejector.messages.LangKey;
+import me.loidsemus.itemejector.messages.Messages;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 public class ManagementMenu extends InventoryGui {
-
-    private final ItemEjector plugin;
-    private final DataPlayer dataPlayer;
 
     private static final String[] layout = {
             "ggggggggg",
@@ -26,6 +24,8 @@ public class ManagementMenu extends InventoryGui {
             "ggggggggg",
             "    a  pn",
     };
+    private final ItemEjector plugin;
+    private final DataPlayer dataPlayer;
 
     public ManagementMenu(ItemEjector plugin, DataPlayer dataPlayer) {
         super(plugin, "ItemEjector Management", layout);
@@ -57,7 +57,8 @@ public class ManagementMenu extends InventoryGui {
             group.addElement(new StaticGuiElement('r', new ItemStack(material, max), click -> {
                 if (click.getType() == ClickType.RIGHT) {
                     dataPlayer.removeBlacklistedItem(material);
-                    click.getWhoClicked().sendMessage(plugin.getMessages().get(LangKey.REMOVED_ITEM, true, material.toString()));
+                    plugin.getMessageProvider()
+                            .sendPrefixed((Player) click.getWhoClicked(), Messages.REMOVED_ITEM, "item", material.toString());
                     populate(group);
                 }
                 return true;

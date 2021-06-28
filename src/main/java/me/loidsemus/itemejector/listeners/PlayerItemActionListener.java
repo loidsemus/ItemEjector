@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class PlayerItemActionListener implements Listener {
 
-    private ItemEjector plugin;
+    private final ItemEjector plugin;
 
     public PlayerItemActionListener(ItemEjector plugin) {
         this.plugin = plugin;

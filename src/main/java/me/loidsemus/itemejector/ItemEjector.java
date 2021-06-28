@@ -11,26 +11,27 @@ import me.loidsemus.itemejector.listeners.PlayerItemActionListener;
 import me.loidsemus.itemejector.listeners.PlayerJoinLeaveListener;
 import me.loidsemus.itemejector.messages.Messages;
 import me.loidsemus.itemejector.utils.UpdateChecker;
+import me.loidsemus.lingo.MessageProvider;
 import me.lucko.commodore.Commodore;
 import me.lucko.commodore.CommodoreProvider;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Objects;
 import java.util.logging.Level;
 
 public class ItemEjector extends JavaPlugin {
 
+    private BukkitAudiences audiences;
+    private MessageProvider messageProvider;
     private SettingsManager settingsManager;
-    private Messages messages;
     private DataSource dataSource;
     private PlayerManager playerManager;
 
     @Override
     public void onEnable() {
-        messages = new Messages(this);
         loadConfigAndMessages();
 
         dataSource = new SQLiteDataSource(this);
@@ -70,7 +71,7 @@ public class ItemEjector extends JavaPlugin {
                 .configurationData(Settings.class, GUISettings.class)
                 .useDefaultMigrationService()
                 .create();
-        String languageCode = settingsManager.getProperty(Settings.LANGUAGE);
+        /*String languageCode = settingsManager.getProperty(Settings.LANGUAGE);
 
         if (languageCode == null) {
             getLogger().log(Level.WARNING, "A language code is not set in the config, falling back to default values");
@@ -86,8 +87,13 @@ public class ItemEjector extends JavaPlugin {
                     " DO NOT change the values in lang_default.properties!");
             getPluginLoader().disablePlugin(this);
             return;
-        }
-        getLogger().log(Level.INFO, "Loaded configs and messages (" + languageCode + ")");
+        }*/
+
+        audiences = BukkitAudiences.create(this);
+        messageProvider = new MessageProvider(audiences, Messages.class, new File(getDataFolder(), "messages.yml"));
+        messageProvider.setPrefix(Messages.PREFIX);
+
+        getLogger().log(Level.INFO, "Loaded configs and messages");
     }
 
     private void registerEvents() {
@@ -114,8 +120,12 @@ public class ItemEjector extends JavaPlugin {
         playerManager.saveAllPlayers();
     }
 
-    public Messages getMessages() {
-        return messages;
+    public BukkitAudiences getAudiences() {
+        return audiences;
+    }
+
+    public MessageProvider getMessageProvider() {
+        return messageProvider;
     }
 
     public DataSource getDataSource() {

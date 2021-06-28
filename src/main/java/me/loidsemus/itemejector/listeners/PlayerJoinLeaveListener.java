@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerJoinLeaveListener implements Listener {
 
-    private ItemEjector plugin;
+    private final ItemEjector plugin;
 
     public PlayerJoinLeaveListener(ItemEjector plugin) {
         this.plugin = plugin;

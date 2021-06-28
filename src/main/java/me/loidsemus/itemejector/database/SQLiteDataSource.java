@@ -22,8 +22,8 @@ public class SQLiteDataSource extends DataSource {
     private static final String SELECT_PLAYER_QUERY = "SELECT * FROM players WHERE uuid = ?;";
     private static final String DELETE_PLAYER_QUERY = "DELETE FROM players WHERE uuid = ?";
 
-    private File dbFile;
-    private HikariDataSource hikari;
+    private final File dbFile;
+    private final HikariDataSource hikari;
 
     public SQLiteDataSource(ItemEjector plugin) {
 
