@@ -4,6 +4,7 @@ package me.loidsemus.itemejector.commands;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import me.loidsemus.itemejector.ItemEjector;
 import me.loidsemus.itemejector.database.DataPlayer;
+import me.loidsemus.itemejector.menu.MainMenu;
 import me.loidsemus.itemejector.messages.LangKey;
 import me.lucko.commodore.Commodore;
 import me.lucko.commodore.file.CommodoreFileFormat;
@@ -141,7 +142,8 @@ public final class MainCommand implements CommandExecutor {
             }
         }
         else {
-            showUsage(player);
+            //showUsage(player);
+            new MainMenu(plugin, dataPlayer).show(player);
         }
 
         return true;
