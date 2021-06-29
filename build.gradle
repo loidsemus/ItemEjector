@@ -28,7 +28,7 @@ dependencies {
     implementation 'de.themoep:inventorygui:1.5-SNAPSHOT'
     implementation 'ch.jalu:configme:1.2.0'
     implementation 'org.jetbrains:annotations:16.0.2'
-    implementation 'me.loidsemus:lingo:1.0.0'
+    implementation 'me.loidsemus:lingo:1.1.0'
 }
 
 compileJava {

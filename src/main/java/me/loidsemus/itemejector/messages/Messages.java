@@ -3,16 +3,16 @@ package me.loidsemus.itemejector.messages;
 import me.loidsemus.lingo.MessageKeyProvider;
 
 public enum Messages implements MessageKeyProvider {
-    PREFIX("prefix", "<gradient:yellow:gold>[ItemEjector]</gradient> "),
+    PREFIX("prefix", "&6[ItemEjector]&r "),
 
-    ADDED_ITEM("added-item", "Added <gradient:yellow:gold><item></gradient> (max <red><maxAmount></red>) to blacklist"),
-    REMOVED_ITEM("removed-item", "Removed <gradient:yellow:gold><item></gradient> from blacklist"),
-    ITEM_NOT_BLACKLISTED("item-not-blacklisted", "<gradient:yellow:gold><item></gradient> <red>is not blacklisted"),
+    ADDED_ITEM("added-item", "Added &6<item>&r (max &c<maxAmount>&r) to blacklist"),
+    REMOVED_ITEM("removed-item", "Removed &6<item>&r from blacklist"),
+    ITEM_NOT_BLACKLISTED("item-not-blacklisted", "&6<item> &cis not blacklisted"),
 
-    INVALID_ITEM("invalid-item", "<gradient:yellow:gold><arg></gradient> <red>is not a valid item name"),
-    INSUFFICIENT_PERMISSION("insufficient-permission", "<red>Insufficient permission"),
-    CORRECT_USAGE("correct-usage", "<red>Correct usage: <gradient:yellow:gold>/ie <usage></gradient>"),
-    NOT_A_NUMBER("not-a-number", "<gradient:yellow:gold><arg></gradient> <red>is not a number");
+    INVALID_ITEM("invalid-item", "&6<arg> &cis not a valid item name"),
+    INSUFFICIENT_PERMISSION("insufficient-permission", "&cInsufficient permission"),
+    CORRECT_USAGE("correct-usage", "&cCorrect usage: &6/ie <usage>"),
+    NOT_A_NUMBER("not-a-number", "&6<arg> &cis not a number");
 
     private final String key;
     private final String def;

@@ -14,7 +14,6 @@ import me.loidsemus.itemejector.utils.UpdateChecker;
 import me.loidsemus.lingo.MessageProvider;
 import me.lucko.commodore.Commodore;
 import me.lucko.commodore.CommodoreProvider;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -24,7 +23,6 @@ import java.util.logging.Level;
 
 public class ItemEjector extends JavaPlugin {
 
-    private BukkitAudiences audiences;
     private MessageProvider messageProvider;
     private SettingsManager settingsManager;
     private DataSource dataSource;
@@ -89,8 +87,7 @@ public class ItemEjector extends JavaPlugin {
             return;
         }*/
 
-        audiences = BukkitAudiences.create(this);
-        messageProvider = new MessageProvider(audiences, Messages.class, new File(getDataFolder(), "messages.yml"));
+        messageProvider = new MessageProvider(Messages.class, new File(getDataFolder(), "messages.yml"));
         messageProvider.setPrefix(Messages.PREFIX);
 
         getLogger().log(Level.INFO, "Loaded configs and messages");
@@ -118,10 +115,6 @@ public class ItemEjector extends JavaPlugin {
     @Override
     public void onDisable() {
         playerManager.saveAllPlayers();
-    }
-
-    public BukkitAudiences getAudiences() {
-        return audiences;
     }
 
     public MessageProvider getMessageProvider() {
