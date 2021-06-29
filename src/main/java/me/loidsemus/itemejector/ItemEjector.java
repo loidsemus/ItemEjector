@@ -69,23 +69,6 @@ public class ItemEjector extends JavaPlugin {
                 .configurationData(Settings.class, GUISettings.class)
                 .useDefaultMigrationService()
                 .create();
-        /*String languageCode = settingsManager.getProperty(Settings.LANGUAGE);
-
-        if (languageCode == null) {
-            getLogger().log(Level.WARNING, "A language code is not set in the config, falling back to default values");
-            messages.useDefaults();
-            return;
-        }
-
-        try {
-            messages.load(languageCode);
-        } catch (FileNotFoundException e) {
-            getLogger().log(Level.SEVERE, "No language file matches the code \"" + languageCode + "\"!" +
-                    " Please make one by copying the contents of lang_default.properties, or changing the config value to \"default\"." +
-                    " DO NOT change the values in lang_default.properties!");
-            getPluginLoader().disablePlugin(this);
-            return;
-        }*/
 
         messageProvider = new MessageProvider(Messages.class, new File(getDataFolder(), "messages.yml"));
         messageProvider.setPrefix(Messages.PREFIX);
