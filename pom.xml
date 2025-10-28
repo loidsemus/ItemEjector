@@ -55,7 +55,7 @@
         <dependency>
             <groupId>de.themoep</groupId>
             <artifactId>inventorygui</artifactId>
-            <version>1.5-SNAPSHOT</version>
+            <version>1.6.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>ch.jalu</groupId>
